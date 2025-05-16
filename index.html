@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Guesser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a slightly more playful feel, can be any standard web font */
+        body {
+            font-family: 'Inter', sans-serif; /* Using Inter as per general guidelines */
+        }
+        /* Additional custom styles if needed */
+        .message-box {
+            min-height: 24px; /* Ensure space for message so layout doesn't jump */
+            transition: all 0.3s ease-in-out;
+        }
+        .correct {
+            color: #10B981; /* Tailwind green-500 */
+        }
+        .incorrect {
+            color: #EF4444; /* Tailwind red-500 */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-slate-900 to-slate-700 flex items-center justify-center min-h-screen text-slate-100 p-4">
+
+    <div class="bg-slate-800 p-8 md:p-12 rounded-xl shadow-2xl w-full max-w-md transform transition-all hover:scale-105 duration-300">
+        <h1 class="text-3xl font-bold text-center text-sky-400 mb-8">Guess the Password</h1>
+
+        <div class="mb-6">
+            <label for="passwordInput" class="block mb-2 text-sm font-medium text-sky-300">Enter your guess:</label>
+            <input type="password" id="passwordInput" class="bg-slate-700 border border-slate-600 text-slate-100 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-3 placeholder-slate-400" placeholder="••••••••" required>
+        </div>
+
+        <button id="submitButton" class="w-full text-white bg-sky-600 hover:bg-sky-700 focus:ring-4 focus:outline-none focus:ring-sky-500 font-medium rounded-lg text-sm px-5 py-3 text-center transition-colors duration-300">
+            Unlock
+        </button>
+
+        <p id="messageArea" class="message-box mt-6 text-center text-sm font-medium"></p>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const CORRECT_PASSWORD = "secret123"; // Define the correct password here
+
+        // --- DOM Element References ---
+        const passwordInput = document.getElementById('passwordInput');
+        const submitButton = document.getElementById('submitButton');
+        const messageArea = document.getElementById('messageArea');
+
+        // --- Event Listener for the Submit Button ---
+        submitButton.addEventListener('click', function() {
+            checkPassword();
+        });
+
+        // --- Event Listener for Enter Key in Input Field ---
+        passwordInput.addEventListener('keypress', function(event) {
+            // Check if the key pressed was 'Enter'
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault(); // Prevent default form submission if it were in a form
+                checkPassword();
+            }
+        });
+
+        /**
+         * Checks the entered password against the correct password
+         * and updates the message area accordingly.
+         */
+        function checkPassword() {
+            const userGuess = passwordInput.value;
+
+            // Clear previous message classes
+            messageArea.classList.remove('correct', 'incorrect');
+            messageArea.textContent = ''; // Clear previous message text
+
+            if (userGuess === "") {
+                messageArea.textContent = "Please enter a password.";
+                messageArea.classList.add('incorrect');
+                return;
+            }
+
+            if (userGuess === CORRECT_PASSWORD) {
+                messageArea.textContent = "Access Granted! 🎉";
+                messageArea.classList.add('correct');
+                // Optionally, you could disable the input and button here
+                // passwordInput.disabled = true;
+                // submitButton.disabled = true;
+                // submitButton.textContent = "Unlocked!";
+                // submitButton.classList.remove('bg-sky-600', 'hover:bg-sky-700');
+                // submitButton.classList.add('bg-green-600', 'cursor-not-allowed');
+            } else {
+                messageArea.textContent = "Incorrect Password. Try again!";
+                messageArea.classList.add('incorrect');
+                passwordInput.value = ""; // Clear the input field for another try
+                passwordInput.focus(); // Set focus back to the input field
+            }
+        }
+    </script>
+
+</body>
+</html>
